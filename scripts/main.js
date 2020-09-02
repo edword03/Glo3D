@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
           timerSeconds = document.querySelector('#timer-seconds');
 
     const getTimeRemaind = () => {
-      let  dateStop = new Date(deadline).getTime(),
+      const  dateStop = new Date(deadline).getTime(),
             dateNow = new Date().getTime(),
             timeRenaining = (dateStop - dateNow) / 1000,
             seconds = Math.floor(timeRenaining % 60),
@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const addZero = n => n < 10 ? '0' + n : n;
 
     const updateClock = () => {
-      let timer = getTimeRemaind();
+      const timer = getTimeRemaind();
 
       const changeValueTimer = () => {
         timerHours.textContent = `${addZero(timer.hours)}`;

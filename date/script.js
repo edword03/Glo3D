@@ -6,50 +6,47 @@ const currentTime = () => {
         timeUntilNY = document.querySelector('#time-until-NY');
   
   const date = new Date();
-  
-  const timeDay = () => {
-    if(date.getHours() < 12 ){
-      day.insertAdjacentHTML('afterbegin', `Доброе утро`);
+  const addZero = n => n < 10 ? '0' + n : n;
+    if(date.getHours() < 12 && date.getHours() > 4){
+      day.textContent = `Доброе утро`;
     } else if (date.getHours() >= 12 && date.getHours() < 18) {
-      day.insertAdjacentHTML('afterbegin', `Добрый день`);
+      day.textContent = `Добрый день`;
+    } else if (date.getHours() > 18){
+      day.textContent = `Добрый вечер`;
+    } else if (date.getHours() >= 0 && date.getHours() < 4) {
+      day.textContent = `Доброй ночи`;
     }
-  };
 
-  const getToday = () => {
-    if (date.getDay() === 1) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Понедельник`);
-    } else if(date.getDay() === 2) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Вторник`);
-    } else if (date.getDay() === 3) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Среда`);
-    } else if (date.getDay() === 4) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Четверг`);
-    } else if (date.getDay() === 5) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Пятница`);
-    } else if (date.getDay() === 6) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Суббота`);
-    } else if(date.getDay() === 0 ) {
-      today.insertAdjacentHTML('afterbegin', `Сегодня: Воскресенье`);
-    }
-  };
+  const dayWeek = date.getDay(),
+        days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        today.textContent = `Сегодня: ${days[dayWeek]}`;
+        console.log(dayWeek);
 
   let getCurrentTime = () => {
-    let getDate = new Date();
-    currentTime.innerHTML = (getDate.getHours() + ':' + getDate.getMinutes() + ':' + getDate.getSeconds());
+    const getDate = new Date(),
+          getHours = getDate.getHours(),
+          getMinutes = getDate.getMinutes(),
+          getSeconds = getDate.getSeconds();
+
+    currentTime.textContent =`${addZero(getHours)}:${addZero(getMinutes)}:${addZero(getSeconds)}`;
     setInterval(getCurrentTime, 1000);
   };
 
   const getTimeUntilNY = () => {
     const date = new Date('31 December 2020').getTime(),
-          currentTime = new Date().getTime(),
+          currentTime = new Date('21 September 2020').getTime(),
           timeLeft = Math.floor(((date - currentTime) / 1000) / 60 / 60 / 24);
-
-    timeUntilNY.insertAdjacentHTML('afterbegin', `До нового года осталось ${timeLeft} дней`);
+    let days;
+    const  declOfNum = (number, titles) => {  
+      let cases = [2, 0, 1, 1, 1, 2];  
+      return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];  
+  };
+    const title = declOfNum(timeLeft, ['день', 'дня', 'дней']);
+    timeUntilNY.textContent = `До нового года осталось ${timeLeft} ${title}`;
   };
 
-  timeDay();
-  getToday();
   getCurrentTime();
   getTimeUntilNY();
 };
+
 currentTime();
