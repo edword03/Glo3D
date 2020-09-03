@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
           timerSeconds = document.querySelector('#timer-seconds');
 
     const getTimeRemaind = () => {
-      let  dateStop = new Date(deadline).getTime(),
+      const  dateStop = new Date(deadline).getTime(),
             dateNow = new Date().getTime(),
             timeRenaining = (dateStop - dateNow) / 1000,
             seconds = Math.floor(timeRenaining % 60),
@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const addZero = n => n < 10 ? '0' + n : n;
 
     const updateClock = () => {
-      let timer = getTimeRemaind();
+      const timer = getTimeRemaind();
 
       const changeValueTimer = () => {
         timerHours.textContent = `${addZero(timer.hours)}`;
@@ -39,27 +39,30 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     setInterval(updateClock, 1000);
   };
-
   countTimer('23 september 2020');
 
   //menu
   const menuToggle = () => {
     const menuBtn = document.querySelector('.menu'),
-    menu = document.querySelector('menu'),
-    closeBtn = document.querySelector('.close-btn'),
-    menuItems = menu.querySelectorAll('ul>li');
+          menu = document.querySelector('menu');
 
-    const closeMenu = () => {
-      menu.style.transform = 'translateX(-100%)';
-      menu.style.left = 0;
-    };
     const menuHandler = () => {
       menu.classList.toggle('active-menu');
     };
 
     menuBtn.addEventListener('click', menuHandler);
-    closeBtn.addEventListener('click', menuHandler);
-    menuItems.forEach(item => item.addEventListener('click', menuHandler));
+    menu.addEventListener('click', (event) => {
+      let target = event.target;
+
+      if (target.classList.contains('close-btn')) {
+        menu.classList.toggle('active-menu');
+      } else {
+        target = target.closest('li');
+        if(target) {
+          menu.classList.toggle('active-menu');
+        }
+      }
+    });
   };
   menuToggle();
 
@@ -67,7 +70,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const togglePopUp = () => {
     const popUp = document.querySelector('.popup'),
           popupBtn = document.querySelectorAll('.popup-btn'),
-          popupClose = document.querySelector('.popup-close'),
           popupContent = document.querySelector('.popup-content');
 
     popupBtn.forEach(item => item.addEventListener('click', () =>{
@@ -87,7 +89,53 @@ window.addEventListener('DOMContentLoaded', () => {
         popUp.style.display = 'block';
       }
     }));
-    popupClose.addEventListener('click', () => popUp.style.display = 'none');
+
+    popUp.addEventListener('click', (event) => {
+      let target = event.target;
+
+      if(target.classList.contains('popup-close')) {
+        popUp.style.display = 'none';
+      } else {
+        target = target.closest('.popup-content');
+        if(!target) {
+          popUp.style.display = 'none';
+        }
+      }
+    });
   };
   togglePopUp();
+
+  //tabs
+  const toggleTab = (event) => {
+    const serviceBlock = document.querySelector('.service-block'),
+          tabHeader = document.querySelector('.service-header'),
+          tab = tabHeader.querySelectorAll('.service-header-tab'),
+          tabContent = document.querySelectorAll('.service-tab');
+          
+    const toggleTabContent = (index) => {
+      for (let i = 0; i < tabContent.length; i++) {
+        if (index === i) {
+          tab[i].classList.add('active');
+          tabContent[i].classList.remove('d-none');
+        } else {
+          tabContent[i].classList.add('d-none');
+          tab[i].classList.remove('active');
+        }
+      }
+    };
+
+    tabHeader.addEventListener('click', event => {
+      let target = event.target;
+          target = target.closest('.service-header-tab');
+
+        if (target) {
+          tab.forEach((item, i) => {
+            if (item === target) {
+              toggleTabContent(i);
+            }
+          });
+        }
+    });
+  };
+  toggleTab();
 });
