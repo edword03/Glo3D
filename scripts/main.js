@@ -55,11 +55,11 @@ window.addEventListener('DOMContentLoaded', () => {
       let target = event.target;
 
       if (target.classList.contains('close-btn')) {
-        menu.classList.toggle('active-menu');
+        menuHandler();
       } else {
         target = target.closest('li');
         if(target) {
-          menu.classList.toggle('active-menu');
+          menuHandler();
         }
       }
     });
@@ -75,17 +75,16 @@ window.addEventListener('DOMContentLoaded', () => {
     popupBtn.forEach(item => item.addEventListener('click', () =>{
       if(document.documentElement.clientWidth > 768) {
         popUp.style.display = 'block';
-        let count = 400;
+        let count = 2;
         const menuMove = () => {
           count++;
-          popupContent.style.left = `${count}px`;
-          if(count < 700) {
+          popupContent.style.left = `${count}%`;
+          if(count < 38) {
             setTimeout(menuMove, 1);
           }
         };
         menuMove();
       } else {
-        popupContent.style.left = '15%';
         popUp.style.display = 'block';
       }
     }));
@@ -95,6 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       if(target.classList.contains('popup-close')) {
         popUp.style.display = 'none';
+        popupContent.style.left = '';
       } else {
         target = target.closest('.popup-content');
         if(!target) {
@@ -107,8 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   //tabs
   const toggleTab = (event) => {
-    const serviceBlock = document.querySelector('.service-block'),
-          tabHeader = document.querySelector('.service-header'),
+    const tabHeader = document.querySelector('.service-header'),
           tab = tabHeader.querySelectorAll('.service-header-tab'),
           tabContent = document.querySelectorAll('.service-tab');
           
