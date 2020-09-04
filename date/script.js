@@ -16,11 +16,8 @@ const currentTime = () => {
     } else if (date.getHours() >= 0 && date.getHours() < 4) {
       day.textContent = `Доброй ночи`;
     }
-
-  const dayWeek = date.getDay(),
-        days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-        today.textContent = `Сегодня: ${days[dayWeek]}`;
-        console.log(dayWeek);
+    
+  today.textContent = `Сегодня: ${date.toLocaleString('ru', {weekday: 'long'})}`;
 
   let getCurrentTime = () => {
     const getDate = new Date(),
@@ -28,13 +25,13 @@ const currentTime = () => {
           getMinutes = getDate.getMinutes(),
           getSeconds = getDate.getSeconds();
 
-    currentTime.textContent =`${addZero(getHours)}:${addZero(getMinutes)}:${addZero(getSeconds)}`;
+    currentTime.textContent =`Текущее время: ${addZero(getHours)}:${addZero(getMinutes)}:${addZero(getSeconds)} PM`;
     setInterval(getCurrentTime, 1000);
   };
 
   const getTimeUntilNY = () => {
     const date = new Date('31 December 2020').getTime(),
-          currentTime = new Date('21 September 2020').getTime(),
+          currentTime = new Date().getTime(),
           timeLeft = Math.floor(((date - currentTime) / 1000) / 60 / 60 / 24);
     let days;
     const  declOfNum = (number, titles) => {  
