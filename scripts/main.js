@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
           timerSeconds = document.querySelector('#timer-seconds');
 
     const getTimeRemaind = () => {
-      let  dateStop = new Date(deadline).getTime(),
+      const  dateStop = new Date(deadline).getTime(),
             dateNow = new Date().getTime(),
             timeRenaining = (dateStop - dateNow) / 1000,
             seconds = Math.floor(timeRenaining % 60),
@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const addZero = n => n < 10 ? '0' + n : n;
 
     const updateClock = () => {
-      let timer = getTimeRemaind();
+      const timer = getTimeRemaind();
 
       const changeValueTimer = () => {
         timerHours.textContent = `${addZero(timer.hours)}`;
@@ -49,10 +49,6 @@ window.addEventListener('DOMContentLoaded', () => {
     closeBtn = document.querySelector('.close-btn'),
     menuItems = menu.querySelectorAll('ul>li');
 
-    const closeMenu = () => {
-      menu.style.transform = 'translateX(-100%)';
-      menu.style.left = 0;
-    };
     const menuHandler = () => {
       menu.classList.toggle('active-menu');
     };
@@ -73,21 +69,23 @@ window.addEventListener('DOMContentLoaded', () => {
     popupBtn.forEach(item => item.addEventListener('click', () =>{
       if(document.documentElement.clientWidth > 768) {
         popUp.style.display = 'block';
-        let count = 400;
+        let count = 2;
         const menuMove = () => {
           count++;
-          popupContent.style.left = `${count}px`;
-          if(count < 700) {
+          popupContent.style.left = `${count}%`;
+          if(count < 38) {
             setTimeout(menuMove, 1);
           }
         };
         menuMove();
       } else {
-        popupContent.style.left = '15%';
         popUp.style.display = 'block';
       }
     }));
-    popupClose.addEventListener('click', () => popUp.style.display = 'none');
+    popupClose.addEventListener('click', () => {
+      popUp.style.display = 'none';
+      popupContent.style.left = '';
+    });
   };
   togglePopUp();
 });
