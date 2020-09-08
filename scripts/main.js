@@ -238,5 +238,32 @@ window.addEventListener('DOMContentLoaded', () => {
 
   slider();
 
+  const getDataImg = () => {
+    const command = document.querySelector('.command');
+    command.addEventListener('mouseover', (event) => {
+      let target = event.target;
+      if (target.matches('.command__photo')) {
+        let img = target.src;
+        target.src = target.dataset.img;
+        command.addEventListener('mouseout', () => {
+          if (target.matches('.command__photo')) {
+            target.src = img;
+          }
+        });
+      }
+    });
+  };
+  getDataImg();
 
+  const calcCost = () => {
+    const calcBlock = document.querySelector('.calc-block');
+    calcBlock.addEventListener('input', (event) => {
+      let target = event.target;
+      if (target.matches('.calc-item')) {
+        target.value = target.value.replace(/[^\d]/g, '');
+      }
+    });
+  }; 
+  
+  calcCost();
 });
