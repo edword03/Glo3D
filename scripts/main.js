@@ -44,10 +44,20 @@ window.addEventListener('DOMContentLoaded', () => {
   //menu
   const menuToggle = () => {
     const menuBtn = document.querySelector('.menu'),
-          menu = document.querySelector('menu');
+          menu = document.querySelector('menu'),
+          buttonSlow = document.querySelector('main>a');
 
     const menuHandler = () => {
       menu.classList.toggle('active-menu');
+    };
+
+    const showScroll = (event, target) => {
+      event.preventDefault();
+          const blockID = target.getAttribute('href').substring(1);
+          document.getElementById(blockID).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
     };
 
     menuBtn.addEventListener('click', menuHandler);
@@ -62,6 +72,15 @@ window.addEventListener('DOMContentLoaded', () => {
           menuHandler();
         }
       }
+
+      target = event.target;
+      if (target.matches('a[href*="#"]')) {
+        showScroll(event, target);
+      }
+    });
+
+    buttonSlow.addEventListener('click', () => {
+      showScroll(event, buttonSlow);
     });
   };
   menuToggle();
