@@ -280,18 +280,6 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   getDataImg();
 
-  //validation of inputs
-  const calcCost = () => {
-    const calcBlock = document.querySelector('.calc-block');
-    calcBlock.addEventListener('input', (event) => {
-      let target = event.target;
-      if (target.matches('input')) {
-        target.value = target.value.replace(/[^\d]/g, '');
-      }
-    });
-  }; 
-  
-  calcCost();
 
   //calculator
   const calc = (price = 100) => {
@@ -301,6 +289,19 @@ window.addEventListener('DOMContentLoaded', () => {
       calcCount = document.querySelector('.calc-count'),
       calcDay = document.querySelector('.calc-day'),
       totalValue = document.getElementById('total');
+
+     //validation of inputs
+      const calcCost = () => {
+        const calcBlock = document.querySelector('.calc-block');
+        calcBlock.addEventListener('input', (event) => {
+          let target = event.target;
+          if (target.matches('input')) {
+            target.value = target.value.replace(/[^\d]/g, '');
+          }
+        });
+      }; 
+
+    calcCost();
 
     const countSum = () => {
       let total = 0,
@@ -320,7 +321,7 @@ window.addEventListener('DOMContentLoaded', () => {
        }
 
        if (typeValue && squareValue) {
-         total = price * typeValue * squareValue * countValue * dayValue;
+         total = Math.round(price * typeValue * squareValue * countValue * dayValue);
        }
 
       totalValue.textContent = total;
