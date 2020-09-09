@@ -240,16 +240,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const getDataImg = () => {
     const command = document.querySelector('.command');
+    let img;
+    
     command.addEventListener('mouseover', (event) => {
       let target = event.target;
       if (target.matches('.command__photo')) {
-        let img = target.src;
+        img = target.src;
         target.src = target.dataset.img;
-        command.addEventListener('mouseout', () => {
-          if (target.matches('.command__photo')) {
-            target.src = img;
-          }
-        });
+      }
+      
+    });
+
+    command.addEventListener('mouseout', (event) => {
+      let target = event.target;
+      if (target.matches('.command__photo')) {
+        target.src = img;
       }
     });
   };
@@ -259,7 +264,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const calcBlock = document.querySelector('.calc-block');
     calcBlock.addEventListener('input', (event) => {
       let target = event.target;
-      if (target.matches('.calc-item')) {
+      if (target.matches('input')) {
         target.value = target.value.replace(/[^\d]/g, '');
       }
     });
