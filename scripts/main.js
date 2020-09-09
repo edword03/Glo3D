@@ -55,28 +55,26 @@ window.addEventListener('DOMContentLoaded', () => {
       menu.classList.toggle('active-menu');
     };
 
-    menuLinks.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const blockID = item.getAttribute('href').substring(1);
+    const showScroll = (event, target) => {
+      event.preventDefault();
+          const blockID = target.getAttribute('href').substring(1);
+          document.getElementById(blockID).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+    };
 
-        document.getElementById(blockID).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+    menuLinks.forEach(item => {
+      item.addEventListener('click', () => {
+        showScroll(event, item);
       });
     });
 
     menuBtn.addEventListener('click', menuHandler);
     closeBtn.addEventListener('click', menuHandler);
     menuItems.forEach(item => item.addEventListener('click', menuHandler));
-    buttonSlow.addEventListener('click',event => {
-      event.preventDefault();
-      const id = buttonSlow.getAttribute('href').substring(1);
-      document.getElementById(id).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+    buttonSlow.addEventListener('click',() => {
+      showScroll(event, buttonSlow);
     });
   };
   menuToggle();
