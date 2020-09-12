@@ -344,18 +344,12 @@ window.addEventListener('DOMContentLoaded', () => {
       loadMessage = 'Загрузка...',
       successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
 
-      
-      const form = document.getElementById('form1'),
-      modalForm = document.getElementById('form2'),
-      footerForm = document.getElementById('form3');
-      // formName = document.getElementById('form1-name'),
-      // modalFormName = document.getElementById('form2-name'),
-      // footerModalName = document.getElementById('form3-name');
+      const forms = document.querySelectorAll('form');
       const statusMessage = document.createElement('div');
       statusMessage.style.cssText = 'font-size: 2 rem;';
       
-      const validForm = (form) => {
-        form.addEventListener('input', (event) => {
+      const validForm = (forms) => {
+        forms.addEventListener('input', (event) => {
           let target = event.target;
           if (target.matches('#form1-phone') || target.matches('#form2-phone') || target.matches('#form3-phone')) {
             target.value = target.value.replace(/[^\+\d]/g, '');
@@ -368,15 +362,22 @@ window.addEventListener('DOMContentLoaded', () => {
         });
       }; 
 
-      validForm(form);
-      validForm(modalForm);
-      validForm(footerForm);
+      forms.forEach((item) => {
+        validForm(item);
+        item.addEventListener('submit', (e)=> {
+          formSend(e, item);
+        });
+      });
 
     const formSend = (e, form) => {
       e.preventDefault();
       statusMessage.textContent = loadMessage;
       form.appendChild(statusMessage);
   
+      if (form.matches('#form3')) {
+        statusMessage.style.cssText = `color: #fff`;
+      }
+
       const formData = new FormData(form);
       let body = {};
       formData.forEach((item, key) => {
@@ -388,19 +389,22 @@ window.addEventListener('DOMContentLoaded', () => {
         console.error(errorData);
       });
       form.reset();
+     
+      const removeStatus = () => {
+        statusMessage.remove();
+      };
+
+      const popup = document.querySelector('.popup');
+      popup.addEventListener('click', (event) => {
+        if (popup.style.display === 'none') {
+          removeStatus();
+        }
+
+      });
+
+      setTimeout(removeStatus, 10000);
     };
 
-    form.addEventListener('submit', () => {
-      formSend(event, form);
-    });
-
-    modalForm.addEventListener('submit', () => {
-      formSend(event, modalForm);
-    });
-
-    footerForm.addEventListener('submit', () => {
-      sendForm(event, footerForm);
-    });
     const sendData = (body, outputData, errorData) => {
       const request = new XMLHttpRequest();
 
