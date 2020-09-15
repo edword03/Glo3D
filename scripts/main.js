@@ -351,23 +351,21 @@ window.addEventListener('DOMContentLoaded', () => {
       const validForm = (forms) => {
         forms.addEventListener('input', (event) => {
           let target = event.target;
-          if (target.matches('#form1-phone') || target.matches('#form2-phone') || target.matches('#form3-phone')) {
+          if (target.matches('.form-phone')) {
             target.value = target.value.replace(/[^\+\d]/g, '');
           }
-          if (target.matches('#form1-name') || target.matches('#form2-name') || 
-          target.matches('#form3-name') || target.matches('#form2-message')) {
-            
+          if (target.matches('.form-name')|| target.matches('#form2-message')) {
             target.value = target.value.replace(/[^А-я\s]/g, '');
           }
         });
       }; 
 
-      forms.forEach((item) => {
-        validForm(item);
-        item.addEventListener('submit', (e)=> {
-          formSend(e, item);
-        });
+    forms.forEach((item) => {
+      validForm(item);
+      item.addEventListener('submit', (e)=> {
+        formSend(e, item);
       });
+    });
 
     const formSend = (e, form) => {
       e.preventDefault();
@@ -384,10 +382,12 @@ window.addEventListener('DOMContentLoaded', () => {
         body[key] = item;
       });
 
-      sendData(body, () => {statusMessage.textContent = successMessage;}, (errorData) => {
-        statusMessage.textContent = errorMessage;
-        console.error(errorData);
-      });
+      sendData(body)
+        .then(()=> {statusMessage.textContent = successMessage;})
+        .catch((error) => {
+          statusMessage.textContent = errorMessage;
+          console.error(error);
+        });
       form.reset();
      
       const removeStatus = () => {
@@ -401,28 +401,28 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
       });
-
       setTimeout(removeStatus, 10000);
     };
 
-    const sendData = (body, outputData, errorData) => {
-      const request = new XMLHttpRequest();
-
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-        }
+    const sendData = (body) => {
+      return new Promise((outputData, errorData) => {
+        const request = new XMLHttpRequest();
+  
+        request.addEventListener('readystatechange', () => {
+          if (request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 200) {
+            outputData();
+          } else {
+            errorData(request.status);
+          }
+        });
+  
+        request.open('POST', './server.php');
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(JSON.stringify(body));
       });
-
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-type', 'application/json');
-
-      request.send(JSON.stringify(body));
     };
 
   };
