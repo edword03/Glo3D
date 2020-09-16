@@ -362,9 +362,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     forms.forEach((item) => {
       validForm(item);
-      item.addEventListener('submit', (e)=> {
-        formSend(e, item);
-      });
+      item.addEventListener('submit',  e => formSend(e, item));
     });
 
     const formSend = (e, form) => {
@@ -383,48 +381,40 @@ window.addEventListener('DOMContentLoaded', () => {
       });
 
       sendData(body)
-        .then(()=> {statusMessage.textContent = successMessage;})
-        .catch((error) => {
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error('status network in not 200');
+          }
+          statusMessage.textContent = successMessage;
+        }).catch((error) => {
           statusMessage.textContent = errorMessage;
           console.error(error);
         });
+
       form.reset();
-     
       const removeStatus = () => {
         statusMessage.remove();
       };
 
       const popup = document.querySelector('.popup');
-      popup.addEventListener('click', (event) => {
+      popup.addEventListener('click', () => {
         if (popup.style.display === 'none') {
           removeStatus();
         }
-
       });
       setTimeout(removeStatus, 10000);
     };
 
+    //sending data to server
     const sendData = (body) => {
-      return new Promise((outputData, errorData) => {
-        const request = new XMLHttpRequest();
-  
-        request.addEventListener('readystatechange', () => {
-          if (request.readyState !== 4) {
-            return;
-          }
-          if (request.status === 200) {
-            outputData();
-          } else {
-            errorData(request.status);
-          }
-        });
-  
-        request.open('POST', './server.php');
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(JSON.stringify(body));
+      return fetch('./server.php', {
+        method: 'POST',
+        headers: {
+          'Content-type':'application/json'
+        },
+        body: JSON.stringify(body)
       });
     };
-
   };
 
   sendForm();
