@@ -11,9 +11,15 @@ const sendForm = () => {
       forms.addEventListener('input', (event) => {
         let target = event.target;
         if (target.matches('.form-phone')) {
-          target.value = target.value.replace(/[^\+\d]/g, '');
+          target.value = target.value.replace(/[^\d+]/g, '');
+          if (target.value[0] === '+') {
+            target.value.slice(0, 12);
+          } 
+          if (target.value[0] !== '+') {
+            target.value.slice(0, 11);
+          }
         }
-        if (target.matches('.form-name')|| target.matches('#form2-message') || target.matches('#form2-name')) {
+        if (target.matches('.form-name')|| target.matches('#form2-message')) {
           target.value = target.value.replace(/[^А-я\s]/g, '');
         }
       });
@@ -24,44 +30,53 @@ const sendForm = () => {
     item.addEventListener('submit',  e => formSend(e, item));
   });
 
-  const formSend = (e, form) => {
+  const formSend = (e, form, phoneValue) => {
     e.preventDefault();
-    statusMessage.textContent = loadMessage;
-    form.appendChild(statusMessage);
+    phoneValue = form.querySelector('.form-phone');
 
-    if (form.matches('#form3')) {
-      statusMessage.style.cssText = `color: #fff`;
-    }
-
-    const formData = new FormData(form);
-    let body = {};
-    formData.forEach((item, key) => {
-      body[key] = item;
-    });
-
-    sendData(body)
-      .then((response) => {
-        if (response.status !== 200) {
-          throw new Error('status network in not 200');
+      if ((phoneValue.value.slice(0, 1) === '+' && phoneValue.value.length === 12) ||
+                (phoneValue.value.slice(0, 1) === '8' && phoneValue.value.length === 11)){
+        statusMessage.textContent = loadMessage;
+        form.appendChild(statusMessage);
+    
+        if (form.matches('#form3')) {
+          statusMessage.style.cssText = `color: #fff`;
         }
-        statusMessage.textContent = successMessage;
-      }).catch((error) => {
-        statusMessage.textContent = errorMessage;
-        console.error(error);
-      });
 
-    form.reset();
-    const removeStatus = () => {
-      statusMessage.remove();
-    };
+        const formData = new FormData(form);
+        let body = {};
+        formData.forEach((item, key) => {
+          body[key] = item;
+        });
 
-    const popup = document.querySelector('.popup');
-    popup.addEventListener('click', () => {
-      if (popup.style.display === 'none') {
-        removeStatus();
-      }
-    });
-    setTimeout(removeStatus, 10000);
+        sendData(body)
+          .then((response) => {
+            if (response.status !== 200) {
+              throw new Error('status network in not 200');
+            }
+            statusMessage.textContent = successMessage;
+          }).catch((error) => {
+            statusMessage.textContent = errorMessage;
+            console.error(error);
+          });
+
+        const removeStatus = () => {
+          statusMessage.remove();
+        };
+
+        const popup = document.querySelector('.popup');
+        popup.addEventListener('click', () => {
+          if (popup.style.display === 'none') {
+            removeStatus();
+          }
+        });
+        setTimeout(removeStatus, 10000);
+        form.reset();
+        phoneValue.style.border = '';
+     } else {
+      phoneValue.style.border = '2px solid red';
+     }
+    
   };
 
   //sending data to server

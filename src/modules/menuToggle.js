@@ -30,7 +30,7 @@ const menuToggle = () => {
     }
 
     target = event.target;
-    if (target.matches('a[href*="#"]')) {
+    if (target.matches('a[href*="#"]') && !target.matches('.close-btn')) {
       showScroll(event, target);
     }
   });

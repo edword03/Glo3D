@@ -21,11 +21,15 @@ const togglePopUp = () => {
   }));
 
   popUp.addEventListener('click', (event) => {
+    const form = document.getElementById('form3'),
+        formInput = form.querySelectorAll('input');
     let target = event.target;
-
+    
     if(target.classList.contains('popup-close')) {
       popUp.style.display = 'none';
       popupContent.style.left = '';
+      formInput.forEach(item => item.style.border = '');
+      form.reset();
     } else {
       target = target.closest('.popup-content');
       if(!target) {
