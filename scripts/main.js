@@ -46,6 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const menuBtn = document.querySelector('.menu'),
           menu = document.querySelector('menu'),
           buttonSlow = document.querySelector('main>a');
+          
 
     const menuHandler = () => {
       menu.classList.toggle('active-menu');
@@ -74,7 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       target = event.target;
-      if (target.matches('a[href*="#"]')) {
+      if (target.matches('a[href*="#"]') && !target.matches('.close-btn')){
         showScroll(event, target);
       }
     });
@@ -352,20 +353,13 @@ window.addEventListener('DOMContentLoaded', () => {
         forms.addEventListener('input', (event) => {
           let target = event.target;
           if (target.matches('.form-phone')) {
-            const reg = /[^\+(\d)]/g;
-            if (target.value.length < 2) {
-              event.preventDefault();
+            target.value = target.value.replace(/[^\d+]/g, '');
+            if (target.value[0] === '+') {
+              target.value.slice(0, 12);
+            } 
+            if (target.value[0] !== '+') {
+              target.value.slice(0, 11);
             }
-            if (reg.test(target)) {
-              target.maxLength = 12;
-              target.minLength = 3;
-              target.value = target.value.replace(/[^\+(\d)]/g, '');
-            } else {
-              console.log(1);
-              target.maxLength = 11;
-              target.value = target.value.replace(/^\d/g, '');
-            }
-            // target.value = target.value.replace(/[^\+\d]/g, '');
           }
           if (target.matches('.form-name')|| target.matches('#form2-message')) {
             target.value = target.value.replace(/[^А-я\s]/g, '');
@@ -380,48 +374,48 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    const formSend = (e, form) => {
+    const formSend = (e, form, phoneValue) => {
       e.preventDefault();
-      const inputs = form.querySelectorAll('input');
-      inputs.forEach((item) => {
-        // console.log(item.value.length < 2);
-        if (item.value.length < 2) {
-          e.preventDefault();
+      phoneValue = form.querySelector('.form-phone');
+
+      if ((phoneValue.value.slice(0, 1) === '+' && phoneValue.value.length === 12) ||
+                (phoneValue.value.slice(0, 1) === '8' && phoneValue.value.length === 11)) {
+        if (form.matches('#form3')) {
+          statusMessage.style.cssText = `color: #fff`;
         }
-      });
-      statusMessage.textContent = loadMessage;
-      form.appendChild(statusMessage);
+        statusMessage.textContent = loadMessage;
+        form.appendChild(statusMessage);
+        const formData = new FormData(form);
+        let body = {};
+        formData.forEach((item, key) => {
+          body[key] = item;
+        });
   
-      if (form.matches('#form3')) {
-        statusMessage.style.cssText = `color: #fff`;
+        sendData(body)
+          .then(()=> {statusMessage.textContent = successMessage;})
+          .catch((error) => {
+            statusMessage.textContent = errorMessage;
+            console.error(error);
+          });
+
+          const removeStatus = () => {
+            statusMessage.remove();
+          };
+    
+          const popup = document.querySelector('.popup');
+            popup.addEventListener('click', (event) => {
+              if (popup.style.display === 'none') {
+                removeStatus();
+              }
+            });
+            setTimeout(removeStatus, 10000);
+
+        form.reset();
+        phoneValue.style.border = '';
+      } else {
+        phoneValue.style.border = '2px solid red';
       }
 
-      const formData = new FormData(form);
-      let body = {};
-      formData.forEach((item, key) => {
-        body[key] = item;
-      });
-
-      sendData(body)
-        .then(()=> {statusMessage.textContent = successMessage;})
-        .catch((error) => {
-          statusMessage.textContent = errorMessage;
-          console.error(error);
-        });
-      form.reset();
-     
-      const removeStatus = () => {
-        statusMessage.remove();
-      };
-
-      const popup = document.querySelector('.popup');
-      popup.addEventListener('click', (event) => {
-        if (popup.style.display === 'none') {
-          removeStatus();
-        }
-
-      });
-      setTimeout(removeStatus, 10000);
     };
 
     const sendData = (body) => {
