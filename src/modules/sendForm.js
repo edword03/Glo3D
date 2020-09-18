@@ -75,6 +75,7 @@ const sendForm = () => {
         phoneValue.style.border = '';
      } else {
       phoneValue.style.border = '2px solid red';
+      phoneValue.addEventListener('input', () => phoneValue.style.border = '');
      }
     
   };
