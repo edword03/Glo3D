@@ -74,7 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       target = event.target;
-      if (target.matches('a[href*="#"]')) {
+      if (target.matches('a[href*="#"]') && !target.matches('.close-btn')) {
         showScroll(event, target);
       }
     });
@@ -109,11 +109,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }));
 
     popUp.addEventListener('click', (event) => {
+      const form = document.getElementById('form3'),
+        formInput = form.querySelectorAll('input');
       let target = event.target;
 
       if(target.classList.contains('popup-close')) {
         popUp.style.display = 'none';
         popupContent.style.left = '';
+        formInput.forEach(item => item.style.border = '');
+        form.reset();
       } else {
         target = target.closest('.popup-content');
         if(!target) {
@@ -352,7 +356,13 @@ window.addEventListener('DOMContentLoaded', () => {
         forms.addEventListener('input', (event) => {
           let target = event.target;
           if (target.matches('.form-phone')) {
-            target.value = target.value.replace(/[^\+\d]/g, '');
+            target.value = target.value.replace(/[^\d+]/g, '');
+            if (target.value[0] === '+') {
+              target.value.slice(0, 12);
+            } 
+            if (target.value[0] !== '+') {
+              target.value.slice(0, 11);
+            }
           }
           if (target.matches('.form-name')|| target.matches('#form2-message')) {
             target.value = target.value.replace(/[^А-я\s]/g, '');
@@ -365,44 +375,52 @@ window.addEventListener('DOMContentLoaded', () => {
       item.addEventListener('submit',  e => formSend(e, item));
     });
 
-    const formSend = (e, form) => {
+    const formSend = (e, form, phoneValue) => {
       e.preventDefault();
-      statusMessage.textContent = loadMessage;
-      form.appendChild(statusMessage);
-  
-      if (form.matches('#form3')) {
-        statusMessage.style.cssText = `color: #fff`;
-      }
+      phoneValue = form.querySelector('.form-phone');
 
-      const formData = new FormData(form);
-      let body = {};
-      formData.forEach((item, key) => {
-        body[key] = item;
-      });
-
-      sendData(body)
-        .then((response) => {
-          if (response.status !== 200) {
-            throw new Error('status network in not 200');
-          }
-          statusMessage.textContent = successMessage;
-        }).catch((error) => {
-          statusMessage.textContent = errorMessage;
-          console.error(error);
-        });
-
-      form.reset();
-      const removeStatus = () => {
-        statusMessage.remove();
-      };
-
-      const popup = document.querySelector('.popup');
-      popup.addEventListener('click', () => {
-        if (popup.style.display === 'none') {
-          removeStatus();
+      if ((phoneValue.value.slice(0, 1) === '+' && phoneValue.value.length === 12) ||
+                (phoneValue.value.slice(0, 1) === '8' && phoneValue.value.length === 11)) {
+        statusMessage.textContent = loadMessage;
+        form.appendChild(statusMessage);
+    
+        if (form.matches('#form3')) {
+          statusMessage.style.cssText = `color: #fff`;
         }
-      });
-      setTimeout(removeStatus, 10000);
+  
+        const formData = new FormData(form);
+        let body = {};
+        formData.forEach((item, key) => {
+          body[key] = item;
+        });
+  
+        sendData(body)
+          .then((response) => {
+            if (response.status !== 200) {
+              throw new Error('status network in not 200');
+            }
+            statusMessage.textContent = successMessage;
+          }).catch((error) => {
+            statusMessage.textContent = errorMessage;
+            console.error(error);
+          });
+  
+        const removeStatus = () => {
+          statusMessage.remove();
+        };
+  
+        const popup = document.querySelector('.popup');
+        popup.addEventListener('click', () => {
+          if (popup.style.display === 'none') {
+            removeStatus();
+          }
+        });
+        setTimeout(removeStatus, 10000);
+        form.reset();
+        phoneValue.style.border = '';
+      } else {
+        phoneValue.style.border = '2px solid red';
+      }
     };
 
     //sending data to server
