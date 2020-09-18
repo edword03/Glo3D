@@ -352,7 +352,20 @@ window.addEventListener('DOMContentLoaded', () => {
         forms.addEventListener('input', (event) => {
           let target = event.target;
           if (target.matches('.form-phone')) {
-            target.value = target.value.replace(/[^\+\d]/g, '');
+            const reg = /[^\+(\d)]/g;
+            if (target.value.length < 2) {
+              event.preventDefault();
+            }
+            if (reg.test(target)) {
+              target.maxLength = 12;
+              target.minLength = 3;
+              target.value = target.value.replace(/[^\+(\d)]/g, '');
+            } else {
+              console.log(1);
+              target.maxLength = 11;
+              target.value = target.value.replace(/^\d/g, '');
+            }
+            // target.value = target.value.replace(/[^\+\d]/g, '');
           }
           if (target.matches('.form-name')|| target.matches('#form2-message')) {
             target.value = target.value.replace(/[^А-я\s]/g, '');
@@ -369,6 +382,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const formSend = (e, form) => {
       e.preventDefault();
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach((item) => {
+        // console.log(item.value.length < 2);
+        if (item.value.length < 2) {
+          e.preventDefault();
+        }
+      });
       statusMessage.textContent = loadMessage;
       form.appendChild(statusMessage);
   
