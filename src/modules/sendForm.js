@@ -19,7 +19,7 @@ const sendForm = () => {
             target.value.slice(0, 11);
           }
         }
-        if (target.matches('.form-name')|| target.matches('#form2-message') || target.matches('.top-form')) {
+        if (target.matches('.form-name')|| target.matches('#form2-message') || target.matches('#form2-name')) {
           target.value = target.value.replace(/[^А-я\s]/g, '');
         }
       });
