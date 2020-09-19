@@ -1,6 +1,7 @@
  'use strict';
 
  import "@babel/polyfill";
+ import 'dom-node-polyfills';
  import 'nodelist-foreach-polyfill';
  import elementClosest from 'element-closest';
  import 'fetch-polyfill';
