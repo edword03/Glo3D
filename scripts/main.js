@@ -343,10 +343,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
       loadMessage = 'Загрузка...',
-      successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+      successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
+      link = 'https://i.gifer.com/VAyR.gif';
 
       const forms = document.querySelectorAll('form');
-      const statusMessage = document.createElement('div');
+      const statusMessage = document.createElement('div'),
+      gif = document.createElement('img');
+      gif.style.width = '50px';
+      gif.src = link;
       statusMessage.style.cssText = 'font-size: 2 rem;';
       
       const validForm = (forms) => {
@@ -383,8 +387,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (form.matches('#form3')) {
           statusMessage.style.cssText = `color: #fff`;
         }
-        statusMessage.textContent = loadMessage;
-        form.appendChild(statusMessage);
+
+        // statusMessage.textContent = loadMessage;
+        form.appendChild(gif);
         const formData = new FormData(form);
         let body = {};
         formData.forEach((item, key) => {
@@ -392,7 +397,10 @@ window.addEventListener('DOMContentLoaded', () => {
         });
   
         sendData(body)
-          .then(()=> {statusMessage.textContent = successMessage;})
+          .then(()=> {
+            gif.remove();
+            form.appendChild(statusMessage);
+            statusMessage.textContent = successMessage;})
           .catch((error) => {
             statusMessage.textContent = errorMessage;
             console.error(error);
@@ -421,6 +429,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const sendData = (body) => {
       return new Promise((outputData, errorData) => {
         const request = new XMLHttpRequest();
+        
   
         request.addEventListener('readystatechange', () => {
           if (request.readyState !== 4) {
