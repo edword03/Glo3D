@@ -17,23 +17,20 @@ const countTimer = (deadline) => {
 
   const updateClock = () => {
     const timer = getTimeRemaind();
-
-    const changeValueTimer = () => {
+    
       timerHours.textContent = `${addZero(timer.hours)}`;
       timerMinutes.textContent = `${addZero(timer.minutes)}`;
       timerSeconds.textContent = `${addZero(timer.seconds)}`;
-    };
-
+    
     if (timer.timeRenaining > 0) {
-      changeValueTimer();
+      setInterval(updateClock, 1000);
     } else {
       timerHours.textContent = addZero(0);
       timerMinutes.textContent = addZero(0);
       timerSeconds.textContent = addZero(0);
     }
-
   };
-  setInterval(updateClock, 1000);
+  updateClock();
 };
 
 export default countTimer;
