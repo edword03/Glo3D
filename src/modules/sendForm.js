@@ -23,7 +23,7 @@ const sendForm = () => {
           target.value = target.value.replace(/[^А-я\s]/g, '');
         }
         if (target.matches('#form2-message')) {
-          target.value = target.value.replace(/[^А-я.?!\s]/g, '');
+          target.value = target.value.replace(/[a-z0-9]/gi, '');
         }
       });
     }; 
