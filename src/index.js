@@ -1,7 +1,5 @@
  'use strict';
 
- import countTimer from './modules/countTimer';
- countTimer('23 september 2020');
  import "@babel/polyfill";
  import 'dom-node-polyfills';
  import 'nodelist-foreach-polyfill';
@@ -11,6 +9,7 @@
  import 'formdata-polyfill';
  elementClosest(window);
 
+ import countTimer from './modules/countTimer';
  import menuToggle from './modules/menuToggle';
  import togglePopUp from './modules/togglePopUp';
  import toggleTab from './modules/toggleTab';
@@ -20,7 +19,7 @@
  import sendForm from './modules/sendForm';
 
   //timer
-
+  countTimer('23 september 2020');
   //menu
   menuToggle();
 
