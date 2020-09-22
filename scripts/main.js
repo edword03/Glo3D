@@ -324,7 +324,20 @@ window.addEventListener('DOMContentLoaded', () => {
          total = Math.round(price * typeValue * squareValue * countValue * dayValue);
        }
 
-      totalValue.textContent = total;
+       const changeNum = (val, el, timeout, step) => {
+        let i = 0;
+        (function change(){
+          if (i <= val) {
+            setTimeout(change, timeout);
+            el.textContent = i;
+            i = i + step;
+          } else {
+            el.textContent = val;
+          }
+        })();
+       };
+
+       changeNum(total,totalValue, 10, 1000);
     };
 
       calcBlock.addEventListener('change', (event) => {
